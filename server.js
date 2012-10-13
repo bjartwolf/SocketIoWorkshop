@@ -1,13 +1,17 @@
-var http = require('http')
+var app = require('http').createServer(serverHandler)
+			, io = require('socket.io')
 			, fs = require('fs')
 			, reservations = [{id:1, 'name':'Ola','mealId':0},
                     {id:2, 'name':'Per','mealId':1},
                     {id:3, 'name':'Eva','mealId':2},
                     {id:4, 'name':'Olga','mealId':2}];
 
+
+// TODO Remove death*
 // do not EVER use the death* for allow origin for real
+app.listen(process.env.port || 1337);
 // It's just used here to avoid having to run the index of a local file server
-http.createServer(function (req, res) {
+function serverHandler(req, res) {
 	var headers ={
             'Access-Control-Allow-Origin': '*',
             'Cache-Control':'no-cache, no-store, must-revalidate',
@@ -83,5 +87,4 @@ http.createServer(function (req, res) {
                 }
         });
     }
-
-}).listen(process.env.port || 1337);
+}

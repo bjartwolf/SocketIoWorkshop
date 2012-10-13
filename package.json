@@ -1,0 +1,14 @@
+{
+  "name": "SocketIoWorkshop",
+  "subdomain": "bjartwolf.SocketIoWorkshop",
+  "scripts": {
+    "start": "server.js"
+  },
+  "version": "0.0.0-2",
+  "dependencies": {
+    "socket.io": "0.9.10"
+  },
+  "engines": {
+    "node": "0.8.x"
+  }
+}
