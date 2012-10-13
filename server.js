@@ -1,5 +1,5 @@
 var app = require('http').createServer(serverHandler)
-			, io = require('socket.io')
+			, io = require('socket.io').listen(app)
 			, fs = require('fs')
 			, reservations = [{id:1, 'name':'Ola','mealId':0},
                     {id:2, 'name':'Per','mealId':1},
