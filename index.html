@@ -11,6 +11,11 @@
         $(document).ready(function () {
             ko.applyBindings(new ReservationsViewModel());
         });
+        var socket = io.connect('http://localhost');
+        socket.on('news', function (data) {
+            console.log(data);
+            socket.emit('my other event', { my: 'data' });
+        });
         </script>
         <link rel="stylesheet" type="text/css" href="css/style.css" />
     </head>
