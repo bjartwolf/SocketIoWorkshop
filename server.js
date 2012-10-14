@@ -38,12 +38,12 @@ app.get('/', function (req, res) {
     res.redirect('/index.html');
 });
 
-app.get('/load', function (req, res) {
+app.get('/reservations', function (req, res) {
     res.writeHead(200, headers);
     res.end(JSON.stringify(reservations));
 });
 
-app.post('/saveItem', function (req, res) {
+app.post('/reservations', function (req, res) {
     if (req.body.id) { //update existing if it has ID
         for(var i=0; i < reservations.length; i++){
             if (reservations[i].id == req.body.id) {
@@ -52,19 +52,18 @@ app.post('/saveItem', function (req, res) {
                 break; // Found it and updates it. Refactor
             }
         }
-    } else { //new item
-        var d = new Date(), id;
-        id = d.getTime();
-        var seat = {id: id, 'name': req.body.name, 'mealId': req.body.meal.id};
+    } else { // it has no id, so it is a new item
+        var id = new Date().getTime()
+          , seat = {id: id, 'name': req.body.name, 'mealId': req.body.meal.id};
         reservations.push(seat);
     }
     res.writeHead(200,headers);
     res.end(JSON.stringify({id:id}));
 });
 
-app.post('/removeItem', function (req, res) {
+app.delete('/reservations', function (req, res) {
     var i
-       ,rid = req.body.id;
+      , rid = req.body.id;
     for(i = 0; i< reservations.length; i++){
         if(reservations[i].id == rid){
             reservations.splice(i,1);

@@ -5,7 +5,7 @@ var MYAPP = MYAPP || {};
     MYAPP.services = MYAPP.services || {};
 
     MYAPP.services.load = function (callback) {
-        $.getJSON(serverURL + "/load", {
+        $.getJSON(serverURL + "/reservations", {
         }).success(function (result) {//Result is an array of Seat Reservations
             callback(null, result);
         }).error(function () {
@@ -14,7 +14,7 @@ var MYAPP = MYAPP || {};
     };
 
     MYAPP.services.saveItem = function (data, callback) {
-        $.ajax(serverURL + "/saveItem", {
+        $.ajax(serverURL + "/reservations", {
             data: ko.toJS(data),
             dataType: 'json',
             type: 'post'
@@ -29,10 +29,10 @@ var MYAPP = MYAPP || {};
     };
 
     MYAPP.services.removeItem = function (data, callback) {
-        $.ajax(serverURL + "/removeItem", {
+        $.ajax(serverURL + "/reservations", {
             data: ko.toJS(data),
             dataType: 'json',
-            type: "post"
+            type: "delete"
         }).success(function (result) {
             callback(null, result);
         }).error(function (x, msg, err) {
