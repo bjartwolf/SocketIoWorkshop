@@ -37,18 +37,19 @@ app.get('/reservations', function (req, res) {
 });
 
 app.post('/reservations', function (req, res) {
-    if (req.body.id) { //update existing if it has ID
-        for(var i=0; i < reservations.length; i++){
-            if (reservations[i].id == req.body.id) {
-                reservations[i].name = req.body.name;
-                reservations[i].mealId = req.body.meal.id;
-                break; // Found it and updates it. Refactor
-            }
-        }
-    } else { // it has no id, so it is a new item
+    // find reservation
+    var id = req.body.id;
+    var reservation = _.find(reservations, function (reservation) {
+        return reservation.id == id;
+    });
+    if (reservation == undefined) {
+        // Create a new reservation
         var id = new Date().getTime()
           , seat = {id: id, 'name': req.body.name, 'mealId': req.body.meal.id};
         reservations.push(seat);
+    } else {
+        reservation.name = req.body.name;
+        reservation.mealId = req.body.meal.id;
     }
     res.end(JSON.stringify({id:id}));
 });
