@@ -2,13 +2,16 @@ var http = require('http')
 	, socketio = require('socket.io')
 	, director = require('director')
 	, fs = require('fs')
+	, union = require('union')
 	, reservations = [{id:1, 'name':'Ola','mealId':0},
                     {id:2, 'name':'Per','mealId':1},
                     {id:3, 'name':'Eva','mealId':2},
                     {id:4, 'name':'Olga','mealId':2}];
 
 
-var router = new director.http.Router({});
+var router = new director.http.Router({
+    '/saveItem' : { post: saveItem }
+});
 
 router.get('/load', function () {
     var headers = { 'Content-Type': 'text/plain',
@@ -19,8 +22,15 @@ router.get('/load', function () {
     this.res.end(JSON.stringify(reservations));
 });
 
-router.post('/saveItem', function () {
-    var headers = { 'Content-Type': 'text/plain'}; 
+//router.post('/saveItem', function () {
+function saveItem () {
+    var headers = { 'Content-Type': 'text/plain',
+                    'cache-control': 'no-cache, no-store, must-revalidate',
+                    'expires' : 0
+    }; 
+    this.res.json(this.req.body);
+    this.res.end('');
+    console.log('****');
     var data = JSON.parse(this.req.body);
     if (data.id) { //update existing
         for(var i=0; i < reservations.length; i++){
@@ -32,16 +42,20 @@ router.post('/saveItem', function () {
         }
     } else { //new item
         var d = new Date(), id;
-        id=d.getTime();
+        id = d.getTime();
         var seat = {id: id, 'name': data.name, 'mealId': data.meal.id};
         reservations.push(seat);
     }
     this.res.writeHead(200,headers);
     this.res.end(JSON.stringify({id:id}));
-});
+}
+//});
 
 router.post('/removeItem', function () {
-    var headers = { 'Content-Type': 'text/plain'}; 
+    var headers = { 'Content-Type': 'text/plain',
+                    'cache-control': 'no-cache, no-store, must-revalidate',
+                    'expires' : 0
+    }; 
     var data = JSON.parse(this.req.body);
     var i, rid
     rid=data.id;

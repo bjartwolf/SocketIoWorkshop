@@ -17,7 +17,7 @@ var MYAPP = MYAPP || {};
         $.ajax(serverURL + "/saveItem", {
             data: ko.toJSON(data),
             dataType: 'json',
-            type: "post"
+            type: 'POST'
         }).success(function (result) {
             if (!data.id()) {
                 data.id(result.id);
