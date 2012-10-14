@@ -3,6 +3,7 @@ var socketio = require('socket.io')
 	, express = require('express')
     , app = express()
     , server = require('http').createServer(app)
+    , _ = require('underscore') 
     , io = socketio.listen(server)
 	, reservations = [{id:1, 'name': 'Ola',  'mealId':0},
                       {id:2, 'name': 'Per',  'mealId':1},
@@ -62,17 +63,12 @@ app.post('/reservations', function (req, res) {
 });
 
 app.delete('/reservations', function (req, res) {
-    var i
-      , rid = req.body.id;
-    for(i = 0; i< reservations.length; i++){
-        if(reservations[i].id == rid){
-            reservations.splice(i,1);
-            console.log('Removed '+rid);
-            break;
-        }
-    }
+    var id = req.body.id;
+    reservations = _.filter(reservations, function (reservation) {
+        return reservation.id != id;
+    });
     res.writeHead(200,headers);
-    res.end(JSON.stringify({id:rid}));
+    res.end(JSON.stringify({id:id}));
 });
 
 
