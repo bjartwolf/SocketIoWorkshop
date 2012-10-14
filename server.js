@@ -47,9 +47,8 @@ app.post('/removeItem', function (req, res) {
                     'cache-control': 'no-cache, no-store, must-revalidate',
                     'expires' : 0
     }; 
-    var data = JSON.parse(req.body);
-    var i, rid
-    rid=data.id;
+    var i
+       ,rid = req.body.id;
     for(i = 0; i< reservations.length; i++){
         if(reservations[i].id == rid){
             reservations.splice(i,1);
