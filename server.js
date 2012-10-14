@@ -1,5 +1,4 @@
 var socketio = require('socket.io')
-	, fs = require('fs')
 	, express = require('express')
     , app = express()
     , server = require('http').createServer(app)
