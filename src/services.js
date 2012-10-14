@@ -15,9 +15,9 @@ var MYAPP = MYAPP || {};
 
     MYAPP.services.saveItem = function (data, callback) {
         $.ajax(serverURL + "/saveItem", {
-            data: ko.toJSON(data),
+            data: ko.toJS(data),
             dataType: 'json',
-            type: 'POST'
+            type: 'post'
         }).success(function (result) {
             if (!data.id()) {
                 data.id(result.id);
@@ -30,7 +30,7 @@ var MYAPP = MYAPP || {};
 
     MYAPP.services.removeItem = function (data, callback) {
         $.ajax(serverURL + "/removeItem", {
-            data: ko.toJSON(data),
+            data: ko.toJS(data),
             dataType: 'json',
             type: "post"
         }).success(function (result) {

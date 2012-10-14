@@ -1,62 +1,53 @@
-var http = require('http')
-	, socketio = require('socket.io')
-	, director = require('director')
+var socketio = require('socket.io')
 	, fs = require('fs')
-	, union = require('union')
+	, express = require('express')
+    , app = express()
+    , server = require('http').createServer(app)
 	, reservations = [{id:1, 'name':'Ola','mealId':0},
                     {id:2, 'name':'Per','mealId':1},
                     {id:3, 'name':'Eva','mealId':2},
                     {id:4, 'name':'Olga','mealId':2}];
 
+app.use(express.bodyParser());
 
-var router = new director.http.Router({
-    '/saveItem' : { post: saveItem }
-});
-
-router.get('/load', function () {
+app.get('/load', function (req, res) {
     var headers = { 'Content-Type': 'text/plain',
                     'cache-control': 'no-cache, no-store, must-revalidate',
                     'expires' : 0
     }; 
-    this.res.writeHead(200, headers);
-    this.res.end(JSON.stringify(reservations));
+    res.writeHead(200, headers);
+    res.end(JSON.stringify(reservations));
 });
 
-//router.post('/saveItem', function () {
-function saveItem () {
+app.post('/saveItem', function (req, res) {
     var headers = { 'Content-Type': 'text/plain',
                     'cache-control': 'no-cache, no-store, must-revalidate',
                     'expires' : 0
     }; 
-    this.res.json(this.req.body);
-    this.res.end('');
-    console.log('****');
-    var data = JSON.parse(this.req.body);
-    if (data.id) { //update existing
+    if (req.body.id) { //update existing
         for(var i=0; i < reservations.length; i++){
-            if (reservations[i].id == data.id) {
-                reservations[i].name = data.name;
-                reservations[i].mealId = data.meal.id;
+            if (reservations[i].id == req.body.id) {
+                reservations[i].name = req.body.name;
+                reservations[i].mealId = req.body.meal.id;
                 break;
             }
         }
     } else { //new item
         var d = new Date(), id;
         id = d.getTime();
-        var seat = {id: id, 'name': data.name, 'mealId': data.meal.id};
+        var seat = {id: id, 'name': req.body.name, 'mealId': req.body.meal.id};
         reservations.push(seat);
     }
-    this.res.writeHead(200,headers);
-    this.res.end(JSON.stringify({id:id}));
-}
-//});
+    res.writeHead(200,headers);
+    res.end(JSON.stringify({id:id}));
+});
 
-router.post('/removeItem', function () {
+app.post('/removeItem', function (req, res) {
     var headers = { 'Content-Type': 'text/plain',
                     'cache-control': 'no-cache, no-store, must-revalidate',
                     'expires' : 0
     }; 
-    var data = JSON.parse(this.req.body);
+    var data = JSON.parse(req.body);
     var i, rid
     rid=data.id;
     for(i = 0; i< reservations.length; i++){
@@ -66,37 +57,30 @@ router.post('/removeItem', function () {
             break;
         }
     }
-    this.res.writeHead(200,headers);
-    this.res.end(JSON.stringify({id:rid}));
+    res.writeHead(200,headers);
+    res.end(JSON.stringify({id:rid}));
 });
 
-router.get('/index.html', function () {
-    fileHandler(this.req, this.res); 
-});
-router.get(/lib\/.*js/, function () {
-    fileHandler(this.req, this.res); 
+app.get('/index.html', function (req, res) {
+    fileHandler(req, res); 
 });
 
-router.get(/src\/.*js/, function () {
-    fileHandler(this.req, this.res); 
+app.get(/lib\/.*js/, function (req, res) {
+    fileHandler(req, res); 
 });
 
-router.get(/img\/.*png/, function () {
-    fileHandler(this.req, this.res); 
+app.get(/src\/.*js/, function (req, res) {
+    fileHandler(req, res); 
 });
 
-router.get(/css\/.*css/, function () {
-    fileHandler(this.req, this.res); 
+app.get(/img\/.*png/, function (req, res) {
+    fileHandler(req, res); 
 });
 
-var server = http.createServer(function (req, res) {
-  router.dispatch(req, res, function (err) {
-      if (err) {
-        res.writeHead(404);
-        res.end();
-      }
-  });
+app.get(/css\/.*css/, function (req, res) {
+    fileHandler(req, res); 
 });
+
 
 server.listen(process.env.port || 1337);
 
