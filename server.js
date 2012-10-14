@@ -3,6 +3,7 @@ var socketio = require('socket.io')
 	, express = require('express')
     , app = express()
     , server = require('http').createServer(app)
+    , io = socketio.listen(server)
 	, reservations = [{id:1, 'name': 'Ola',  'mealId':0},
                       {id:2, 'name': 'Per',  'mealId':1},
                       {id:3, 'name': 'Eva',  'mealId':2},
@@ -10,12 +11,32 @@ var socketio = require('socket.io')
 
 // Parsing JSON into body.req[param] automagically
 app.use(express.bodyParser());
+app.use('/lib', express.static(__dirname + '/lib'));
+app.use('/src', express.static(__dirname + '/src'));
+app.use('/img', express.static(__dirname + '/img'))
+app.use('/css', express.static(__dirname + '/css'));
+app.use('/', express.static(__dirname + '/html'));
+
+server.listen(process.env.port || 1337);
+
+io.sockets.on('connection', function (socket) {
+  console.log('socket connected');
+  socket.emit('news', { hello: 'world' });
+  socket.on('cxevent', function (data) {
+        socket.emit('news', { hello: 'world from cx event' });
+  });
+});
 
 // Standard headers used in app
-var headers = { 'Content-Type' : 'text/plain',
+var headers = { 'Content-Type' : 'text/plain; charset=utf-8',
                 'cache-control': 'no-cache, no-store, must-revalidate',
                 'expires'      : 0
 }; 
+
+app.get('/', function (req, res) {
+    res.writeHead(200, headers);
+    res.redirect('/index.html');
+});
 
 app.get('/load', function (req, res) {
     res.writeHead(200, headers);
@@ -55,63 +76,4 @@ app.post('/removeItem', function (req, res) {
     res.end(JSON.stringify({id:rid}));
 });
 
-app.get('/index.html', function (req, res) {
-    fileHandler(req, res); 
-});
 
-app.get(/lib\/.*js/, function (req, res) {
-    fileHandler(req, res); 
-});
-
-app.get(/src\/.*js/, function (req, res) {
-    fileHandler(req, res); 
-});
-
-app.get(/img\/.*png/, function (req, res) {
-    fileHandler(req, res); 
-});
-
-app.get(/css\/.*css/, function (req, res) {
-    fileHandler(req, res); 
-});
-
-
-server.listen(process.env.port || 1337);
-
-var io = socketio.listen(server);
-
-io.sockets.on('connection', function (socket) {
-  console.log('socket connected');
-  socket.emit('news', { hello: 'world' });
-  socket.on('cxevent', function (data) {
-        socket.emit('news', { hello: 'world from cx event' });
-  });
-});
-
-function fileHandler(req, res) {
-        var headers = { 'Content-Type': 'text/plain'}; 
-        fs.readFile(__dirname + req.url,
-            function (err, data) {
-                if (err) {
-                    res.writeHead(400);
-                    res.end('File not found');
-                    console.log(req);
-                    console.log('File not found: ' + req.url);
-                    return;
-                } else {
-                	if(req.url.indexOf('.css')>0){
-                		headers['Content-Type']= 'text/css';
-                	} else if(req.url.indexOf('.js')>0){
-                		headers['Content-Type']= 'text/javascript';
-                	} else if(req.url.indexOf('.html')>0){
-                		headers['Content-Type']= 'text/html';
-                	} else if(req.url.indexOf('.png')>0){
-                		headers['Content-Type']= 'image/png';
-                    }
-                	res.writeHead(200,headers);
-                	res.write(data,'utf8');
-                	res.end();
-                	return;
-                }
-        });
-}
