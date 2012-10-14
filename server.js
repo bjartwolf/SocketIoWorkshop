@@ -3,33 +3,32 @@ var socketio = require('socket.io')
 	, express = require('express')
     , app = express()
     , server = require('http').createServer(app)
-	, reservations = [{id:1, 'name':'Ola','mealId':0},
-                    {id:2, 'name':'Per','mealId':1},
-                    {id:3, 'name':'Eva','mealId':2},
-                    {id:4, 'name':'Olga','mealId':2}];
+	, reservations = [{id:1, 'name': 'Ola',  'mealId':0},
+                      {id:2, 'name': 'Per',  'mealId':1},
+                      {id:3, 'name': 'Eva',  'mealId':2},
+                      {id:4, 'name': 'Olga', 'mealId':2}];
 
+// Parsing JSON into body.req[param] automagically
 app.use(express.bodyParser());
 
+// Standard headers used in app
+var headers = { 'Content-Type' : 'text/plain',
+                'cache-control': 'no-cache, no-store, must-revalidate',
+                'expires'      : 0
+}; 
+
 app.get('/load', function (req, res) {
-    var headers = { 'Content-Type': 'text/plain',
-                    'cache-control': 'no-cache, no-store, must-revalidate',
-                    'expires' : 0
-    }; 
     res.writeHead(200, headers);
     res.end(JSON.stringify(reservations));
 });
 
 app.post('/saveItem', function (req, res) {
-    var headers = { 'Content-Type': 'text/plain',
-                    'cache-control': 'no-cache, no-store, must-revalidate',
-                    'expires' : 0
-    }; 
-    if (req.body.id) { //update existing
+    if (req.body.id) { //update existing if it has ID
         for(var i=0; i < reservations.length; i++){
             if (reservations[i].id == req.body.id) {
                 reservations[i].name = req.body.name;
                 reservations[i].mealId = req.body.meal.id;
-                break;
+                break; // Found it and updates it. Refactor
             }
         }
     } else { //new item
@@ -43,10 +42,6 @@ app.post('/saveItem', function (req, res) {
 });
 
 app.post('/removeItem', function (req, res) {
-    var headers = { 'Content-Type': 'text/plain',
-                    'cache-control': 'no-cache, no-store, must-revalidate',
-                    'expires' : 0
-    }; 
     var i
        ,rid = req.body.id;
     for(i = 0; i< reservations.length; i++){
