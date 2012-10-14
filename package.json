@@ -7,7 +7,8 @@
   "version": "0.0.0-10",
   "dependencies": {
     "socket.io": "0.9.10",
-    "express": "3.0.0rc5"
+    "express": "3.0.0rc5",
+    "underscore": "1.4.2"
   },
   "engines": {
     "node": "0.8.x"
