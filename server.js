@@ -1,10 +1,10 @@
 var socketio = require('socket.io')
-	, express = require('express')
+    , express = require('express')
     , app = express()
     , server = require('http').createServer(app)
     , _ = require('underscore') 
     , io = socketio.listen(server)
-	, reservations = [{id:1, 'name': 'Ola',  'mealId':0},
+    , reservations = [{id:1, 'name': 'Ola',  'mealId':0},
                       {id:2, 'name': 'Per',  'mealId':1},
                       {id:3, 'name': 'Eva',  'mealId':2},
                       {id:4, 'name': 'Olga', 'mealId':2}];
