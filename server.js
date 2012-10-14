@@ -42,14 +42,14 @@ app.post('/reservations', function (req, res) {
     var reservation = _.find(reservations, function (reservation) {
         return reservation.id == id;
     });
-    if (reservation == undefined) {
-        // Create a new reservation
+    if (reservation) {
+        reservation.name = req.body.name;
+        reservation.mealId = req.body.meal.id;
+    } else {
+       // No reservation found - create a new reservation
         var id = new Date().getTime()
           , seat = {id: id, 'name': req.body.name, 'mealId': req.body.meal.id};
         reservations.push(seat);
-    } else {
-        reservation.name = req.body.name;
-        reservation.mealId = req.body.meal.id;
     }
     res.end(JSON.stringify({id:id}));
 });
@@ -61,5 +61,3 @@ app.delete('/reservations', function (req, res) {
     });
     res.end(JSON.stringify({id:id}));
 });
-
-
