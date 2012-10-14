@@ -28,19 +28,11 @@ io.sockets.on('connection', function (socket) {
   });
 });
 
-// Standard headers used in app
-var headers = { 'Content-Type' : 'text/plain; charset=utf-8',
-                'cache-control': 'no-cache, no-store, must-revalidate',
-                'expires'      : 0
-}; 
-
 app.get('/', function (req, res) {
-    res.writeHead(200, headers);
     res.redirect('/index.html');
 });
 
 app.get('/reservations', function (req, res) {
-    res.writeHead(200, headers);
     res.end(JSON.stringify(reservations));
 });
 
@@ -58,7 +50,6 @@ app.post('/reservations', function (req, res) {
           , seat = {id: id, 'name': req.body.name, 'mealId': req.body.meal.id};
         reservations.push(seat);
     }
-    res.writeHead(200,headers);
     res.end(JSON.stringify({id:id}));
 });
 
@@ -67,7 +58,6 @@ app.delete('/reservations', function (req, res) {
     reservations = _.filter(reservations, function (reservation) {
         return reservation.id != id;
     });
-    res.writeHead(200,headers);
     res.end(JSON.stringify({id:id}));
 });
 
