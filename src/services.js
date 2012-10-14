@@ -5,10 +5,7 @@ var MYAPP = MYAPP || {};
     MYAPP.services = MYAPP.services || {};
 
     MYAPP.services.load = function (callback) {
-        $.ajax(serverURL + "/load", {
-            data: '{}',
-            dataType: 'json',
-            type: 'post'
+        $.getJSON(serverURL + "/load", {
         }).success(function (result) {//Result is an array of Seat Reservations
             callback(null, result);
         }).error(function () {

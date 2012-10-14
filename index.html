@@ -11,7 +11,10 @@
         $(document).ready(function () {
             ko.applyBindings(new ReservationsViewModel());
         });
-        var socket = io.connect('http://localhost');
+        var serverurl = 'http://' + location.host;
+        //var socket = io.connect('http://bjartwolf.socketioworkshop.jit.su');
+        //var socket = io.connect('http://localhost:1337');
+        var socket = io.connect(serverurl);
         socket.on('news', function (data) {
             console.log(data);
             socket.emit('my other event', { my: 'data' });

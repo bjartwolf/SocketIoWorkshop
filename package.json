@@ -4,9 +4,11 @@
   "scripts": {
     "start": "server.js"
   },
-  "version": "0.0.0-2",
+  "version": "0.0.0-7",
   "dependencies": {
-    "socket.io": "0.9.10"
+    "socket.io": "0.9.10",
+    "director": "1.1.6",
+    "union": "0.3.4"
   },
   "engines": {
     "node": "0.8.x"
